@@ -1,17 +1,18 @@
-﻿using QuickyTree.Interfaces;
+﻿using QuickyTree.FileUtils.Models;
+using QuickyTree.Interfaces;
 
 namespace QuickyTree.Tree
 {
-    public class QTree
+    public partial class QTree
     {
         public QNode Root { get; set; }
 
-        public void Add(IComparable item)
+        public QNode Add(IComparable item, ModelUnitMetadata storingData)
         {
             if (Root == null)
             {
-                Root = new QNode(item);
-                return;
+                Root = new QNode(item, null, storingData);
+                return Root;
             }
 
             var curNode = Root;
@@ -21,8 +22,8 @@ namespace QuickyTree.Tree
                 {
                     if (curNode.LeftNode == null)
                     {
-                        curNode.LeftNode = new QNode(item);
-                        break;
+                        curNode.LeftNode = new QNode(item, curNode, storingData);
+                        return curNode.LeftNode;
                     }
                     curNode = curNode.LeftNode;
                 }
@@ -30,8 +31,8 @@ namespace QuickyTree.Tree
                 {
                     if (curNode.RightNode == null)
                     {
-                        curNode.RightNode = new QNode(item);
-                        break;
+                        curNode.RightNode = new QNode(item, curNode, storingData);
+                        return curNode.RightNode;
                     }
                     curNode = curNode.RightNode;
                 }
@@ -47,19 +48,19 @@ namespace QuickyTree.Tree
         {
             var curNode = Root;
 
-
+            var result = new QNode[items.Length];
             for (int i = 0; i < items.Length; i++)
             {
                 var item = items[i];
                 var foundNode = FindNode(curNode, item);
+                result[i] = foundNode;
                 if (i == items.Length - 1)
                     continue;
 
                 var nextItem = items[i];
                 var top = DownFindNode(foundNode, nextItem);
-
-
             }
+            return result;
         }
         private QNode DownFindNode(QNode curNode, IComparable item)
         {
@@ -114,10 +115,7 @@ namespace QuickyTree.Tree
             }
         }
 
-        public void Balance()
-        {
-
-        }
+     
         public void Update(IComparable item)
         {
 
