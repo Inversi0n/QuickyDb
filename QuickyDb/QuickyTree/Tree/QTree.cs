@@ -1,5 +1,6 @@
 ﻿using QuickyTree.FileUtils.Models;
 using QuickyTree.Interfaces;
+using System.ComponentModel;
 
 namespace QuickyTree.Tree
 {
@@ -57,7 +58,7 @@ namespace QuickyTree.Tree
                 if (i == items.Length - 1)
                     continue;
 
-                var nextItem = items[i];
+                var nextItem = items[i + 1];
                 var top = DownFindNode(foundNode, nextItem);
             }
             return result;
@@ -70,17 +71,16 @@ namespace QuickyTree.Tree
                 if (compareRes == 0)
                     return curNode;
 
-
                 var parent = curNode.Parent;
                 if (parent == null)
-                    throw new Exception("No papa :(");
+                    return curNode;
 
                 compareRes = parent.Value.CompareTo(item);
                 if (compareRes == 0)
                     return curNode;
 
-                var leftCompare = parent.LeftNode.Value.CompareTo(item);
-                var rightCompare = parent.RightNode.Value.CompareTo(item);
+                var leftCompare = parent.LeftNode?.Value.CompareTo(item) ?? -1;
+                var rightCompare = parent.RightNode?.Value.CompareTo(item) ?? 1;
                 if (leftCompare == -1
                     && rightCompare == 1)
                     return parent;
@@ -115,7 +115,7 @@ namespace QuickyTree.Tree
             }
         }
 
-     
+
         public void Update(IComparable item)
         {
 

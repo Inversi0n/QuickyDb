@@ -6,7 +6,7 @@ namespace QuickyTree.Tree
     {
         public void Balance()
         {
-
+            var newRoot = buildTree(Root);
         }
         /* This function traverse the skewed binary tree and 
        stores its nodes pointers in vector nodes[] */
@@ -40,8 +40,13 @@ namespace QuickyTree.Tree
 
             /* Using index in Inorder traversal, construct 
                left and right subtress */
-            node.LeftNode= buildTreeUtil(nodes, start, mid - 1);
+            node.LeftNode = buildTreeUtil(nodes, start, mid - 1);
+            if (node.LeftNode != null)
+                node.LeftNode.Parent = node;
+
             node.RightNode = buildTreeUtil(nodes, mid + 1, end);
+            if (node.RightNode != null)
+                node.RightNode.Parent = node;
 
             return node;
         }
@@ -56,7 +61,8 @@ namespace QuickyTree.Tree
 
             // Constructs BST from nodes[] 
             int n = nodes.Count;
-            return buildTreeUtil(nodes, 0, n - 1);
+            Root = buildTreeUtil(nodes, 0, n - 1);
+            return root;
         }
 
         public virtual void preOrder(QNode node)
