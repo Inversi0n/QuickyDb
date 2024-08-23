@@ -26,7 +26,7 @@ namespace QuickyTree.Tree
         }
 
         /* Recursive function to construct binary tree */
-        public virtual QNode buildTreeUtil(List<QNode> nodes, int start, int end)
+        public virtual QNode buildTreeUtil(List<QNode> nodes, int start, int end, QNode parent)
         {
             // base case 
             if (start > end)
@@ -38,13 +38,14 @@ namespace QuickyTree.Tree
             int mid = (start + end) / 2;
             QNode node = nodes[mid];
 
+            node.Parent = parent;
             /* Using index in Inorder traversal, construct 
                left and right subtress */
-            node.LeftNode = buildTreeUtil(nodes, start, mid - 1);
+            node.LeftNode = buildTreeUtil(nodes, start, mid - 1, node);
             if (node.LeftNode != null)
                 node.LeftNode.Parent = node;
 
-            node.RightNode = buildTreeUtil(nodes, mid + 1, end);
+            node.RightNode = buildTreeUtil(nodes, mid + 1, end, node);
             if (node.RightNode != null)
                 node.RightNode.Parent = node;
 
@@ -61,7 +62,7 @@ namespace QuickyTree.Tree
 
             // Constructs BST from nodes[] 
             int n = nodes.Count;
-            Root = buildTreeUtil(nodes, 0, n - 1);
+            Root = buildTreeUtil(nodes, 0, n - 1, null);
             return root;
         }
 
