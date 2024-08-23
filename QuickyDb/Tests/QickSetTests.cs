@@ -1,4 +1,5 @@
-﻿using QuickyTree;
+﻿using QuickyTree.Models;
+using QuickyTree.Tabling;
 
 namespace Tests
 {
@@ -12,20 +13,20 @@ namespace Tests
         [Test]
         public void Test1()
         {
-           DataQuickSet<int> quickSet = new DataQuickSet<int>();
-            quickSet.Add(1);
-            quickSet.Add(2);
-            quickSet.Add(3);
-            quickSet.Add(4);
-            quickSet.Add(5);
-            quickSet.Add(6);
-            quickSet.Add(7);
+            DataQuickSet<IntModel> quickSet = new DataQuickSet<IntModel>();
+            quickSet.Add(new IntModel() { Id = 1 });
+            quickSet.Add(new IntModel() { Id = 2 });
+            quickSet.Add(new IntModel() { Id = 3 });
+            quickSet.Add(new IntModel() { Id = 4 });
+            quickSet.Add(new IntModel() { Id = 5 });
+            quickSet.Add(new IntModel() { Id = 6 });
+            quickSet.Add(new IntModel() { Id = 7 });
 
 
             var res1 = quickSet.Search(2, 5);
             quickSet.Save();
             var res2 = quickSet.Search(1, 3);
-                   
+
 
         }
     }

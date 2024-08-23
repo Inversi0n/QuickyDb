@@ -2,20 +2,20 @@
 using QuickyTree.Tree;
 using System;
 using System.Linq.Expressions;
-using QuickyTree.FileUtils.Models;
 using QuickyTree.FileUtils;
+using System.Security.Claims;
 
-namespace QuickyTree
+namespace QuickyTree.Tabling
 {
-    public class DataQuickSet<TModel>
+    public class DataQuickSet<TModel> where TModel : IModel, new()
     {
         public string Name { get; }
         public DataQuickSet()
         {
             Name = typeof(TModel).Name;
-            _tableInstance = new FileWrapper(Name);
+            _tableInstance = new FileWrapper<TModel>(Name);
         }
-        private readonly IFileWrapper _tableInstance;
+        private readonly IFileWrapper<TModel> _tableInstance;
         private QTree[] _indexes = new QTree[1] { new QTree() };
 
         private QTree[] GetIndexes(TModel model)
@@ -27,7 +27,7 @@ namespace QuickyTree
             var foundIndexes = GetIndexes(model);
             foreach (var index in foundIndexes)
             {
-                var fileUnit = _tableInstance.Write(model.ToString());
+                var fileUnit = _tableInstance.Write(model);
                 var node = index.Add(model as IComparable, fileUnit);
             }
 
@@ -39,7 +39,7 @@ namespace QuickyTree
                 index.Balance();
             }
         }
-        public List<QNode> Search(params int[] ids)
+        public List<TModel> Search(params int[] ids)
         {
             //Parsing expression operations
 
@@ -50,8 +50,11 @@ namespace QuickyTree
 
             var foundIndexes = _indexes.Where(i => true).ToArray();
             foundIndexes.Select(i => i.Search(0));
-            var res = this._indexes[0].SearchAll(ids.Cast<IComparable>().ToArray());
-            return res.ToList();
+            var nodes = _indexes[0].SearchAll(ids.Cast<IComparable>().ToArray());
+            var storingDatas = nodes.Select(n => n.StoringData).ToArray();
+            var res = _tableInstance.Reads(storingDatas);
+            //return nodes.Select(r => r.va).ToList();
+            return null;
         }
         public IQueryable<QNode> Search(Expression<Func<TModel, bool>> expression)
         {

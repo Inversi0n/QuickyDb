@@ -2,11 +2,11 @@
 
 namespace QuickyTree.Interfaces
 {
-    public interface IFileWrapper
+    public interface IFileWrapper<T> where T : new()
     {
         public string FilePath { get; }
-        string Read(ModelUnitMetadata fileInfo);
-        string[] Reads(ModelUnitMetadata[] fileInfos);
-        ModelUnitMetadata Write(string data);
+        T Read(ModelUnitMetadata fileInfo);
+        T[] Reads(ModelUnitMetadata[] fileInfos);
+        ModelUnitMetadata Write(T data);
     }
 }
