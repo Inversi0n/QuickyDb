@@ -120,7 +120,10 @@ namespace QuickyTree.Tree
         {
 
         }
-        public void Remove(IComparable item) { }
+        public QNode Remove(IComparable item)
+        {
+            throw new NotImplementedException();
+        }
         public void Delete(IComparable item)
         {
 

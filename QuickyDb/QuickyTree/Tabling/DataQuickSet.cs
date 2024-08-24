@@ -17,7 +17,7 @@ namespace QuickyTree.Tabling
         {
             Name = typeof(TModel).Name;
             Path = path;
-            _tableInstance = new FileWrapper<TModel>(Name);
+            _fileWrapper = new FileWrapper<TModel>(Name);
 
             var properties = typeof(TModel).GetProperties(System.Reflection.BindingFlags.Public);
             var indexProperties = properties.Where(p => p.GetCustomAttributes(typeof(IndexAttribute), true)?.Length > 0).ToArray(); ;
@@ -28,7 +28,7 @@ namespace QuickyTree.Tabling
             }
             _indexes = tempIndexes;
         }
-        private readonly IFileWrapper<TModel> _tableInstance;
+        private readonly IFileWrapper<TModel> _fileWrapper;
         private QTree _id = new QTree();
         private QTree[] _indexes = new QTree[1] { new QTree() };
 
@@ -39,7 +39,7 @@ namespace QuickyTree.Tabling
         public void Add(TModel model)
         {
             var foundIndexes = GetIndexes(model);
-            var fileUnit = _tableInstance.Write(model);
+            var fileUnit = _fileWrapper.Write(model);
 
             var node = _indexes[0].Add(model.Id, fileUnit);
             //foreach (var index in foundIndexes)
@@ -50,7 +50,13 @@ namespace QuickyTree.Tabling
 
 
         }
-        
+        public void Remove(TModel model)
+        {
+            var node = this._indexes[0].Remove(model.Id);
+
+            //Set to filewrapper that node.StoringData is removed
+            //_fileWrapper.Remove(model.Id); //
+        }
         public void Save()
         {
             foreach (var index in _indexes)
@@ -71,7 +77,7 @@ namespace QuickyTree.Tabling
             foundIndexes.Select(i => i.Search(0));
             var nodes = _indexes[0].SearchAll(ids.Cast<IComparable>().ToArray());
             var storingDatas = nodes.Select(n => n.StoringData).ToArray();
-            var res = _tableInstance.Reads(storingDatas);
+            var res = _fileWrapper.Reads(storingDatas);
             //return nodes.Select(r => r.va).ToList();
             return res.ToList(); ;
         }
