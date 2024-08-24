@@ -3,17 +3,20 @@ using QuickyTree.Tree;
 using System;
 using System.Linq.Expressions;
 using QuickyTree.FileUtils;
-using System.Security.Claims;
 using QuickyTree.Models.Attributes;
+using QuickyTree.Models;
 
 namespace QuickyTree.Tabling
 {
     public class DataQuickSet<TModel> where TModel : IModel, new()
     {
+        public StoringConfig Config { get; set; }
+        public string Path { get; private set; }
         public string Name { get; }
-        public DataQuickSet()
+        public DataQuickSet(string path = @"C:\DataDisk\Quicky\DefaultProject\")
         {
             Name = typeof(TModel).Name;
+            Path = path;
             _tableInstance = new FileWrapper<TModel>(Name);
 
             var properties = typeof(TModel).GetProperties(System.Reflection.BindingFlags.Public);
@@ -47,6 +50,7 @@ namespace QuickyTree.Tabling
 
 
         }
+        
         public void Save()
         {
             foreach (var index in _indexes)

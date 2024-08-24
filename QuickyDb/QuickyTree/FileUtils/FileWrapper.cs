@@ -10,10 +10,9 @@ namespace QuickyTree.FileUtils
     {
         public string FilePath { get; private set; }
 
-        public FileWrapper(string name)
+        public FileWrapper(string filePath)
         {
-
-            FilePath = $"C:\\DataDisk\\Quicky\\{name}";
+            FilePath = filePath;
         }
         private readonly object _lock = new object();
 
