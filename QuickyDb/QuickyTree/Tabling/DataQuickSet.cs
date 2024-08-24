@@ -25,11 +25,15 @@ namespace QuickyTree.Tabling
         public void Add(TModel model)
         {
             var foundIndexes = GetIndexes(model);
-            foreach (var index in foundIndexes)
-            {
-                var fileUnit = _tableInstance.Write(model);
-                var node = index.Add(model as IComparable, fileUnit);
-            }
+            var fileUnit = _tableInstance.Write(model);
+
+            var node = _indexes[0].Add(model.Id, fileUnit);
+            //foreach (var index in foundIndexes)
+            //{
+            //    var node = index.Add(model as IComparable, fileUnit);
+            //}
+
+
 
         }
         public void Save()
@@ -54,7 +58,7 @@ namespace QuickyTree.Tabling
             var storingDatas = nodes.Select(n => n.StoringData).ToArray();
             var res = _tableInstance.Reads(storingDatas);
             //return nodes.Select(r => r.va).ToList();
-            return null;
+            return res.ToList(); ;
         }
         public IQueryable<QNode> Search(Expression<Func<TModel, bool>> expression)
         {

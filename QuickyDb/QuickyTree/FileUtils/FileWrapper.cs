@@ -16,6 +16,21 @@ namespace QuickyTree.FileUtils
             FilePath = $"C:\\DataDisk\\Quicky\\{name}";
         }
         private readonly object _lock = new object();
+
+        public ModelUnitMetadata Write(T data)
+        {
+            using var stream = GetWrite();
+            var buffer = ToBson(data);//Encoding.UTF8.GetBytes(data);
+
+            var position = stream.Length;
+            lock (_lock)
+            {
+                stream.Write(buffer);
+            }
+            var fileLen = stream.Length;
+
+            return new ModelUnitMetadata(FilePath, position/*fileLen - buffer.Length*/, buffer.Length);
+        }
         public T Read(ModelUnitMetadata fileInfo)
         {
             using var stream = GetRead();
@@ -53,12 +68,13 @@ namespace QuickyTree.FileUtils
                     if (fileInfo.From + fileInfo.Length == fi.From)
                     {
                         totalLength += fi.Length;
-                        j++;
                     }
+                    j++;
                 }
 
                 var buffer = new byte[totalLength];
-                var len = stream.Read(buffer, (int)fileInfo.From, totalLength);
+                stream.Position = fileInfo.From;
+                var len = stream.Read(buffer, 0, totalLength);
                 if (len < buffer.Length)
                 {
                     var bufT = new byte[len];
@@ -69,7 +85,7 @@ namespace QuickyTree.FileUtils
                 {
                     var fi = orderedfileInfos[i + k];
                     var buf = new byte[fi.Length];
-                    Array.Copy(buffer, fi.From, buf, 0, buf.Length);
+                    Array.Copy(buffer, fi.From - fileInfo.From, buf, 0, buf.Length);
                     var res = FromBson(buf);
                     results.Add(res);
                 }
@@ -80,18 +96,7 @@ namespace QuickyTree.FileUtils
             return results.ToArray();
         }
 
-        public ModelUnitMetadata Write(T data)
-        {
-            using var stream = GetWrite();
-            var buffer = ToBson(data);//Encoding.UTF8.GetBytes(data);
-            lock (_lock)
-            {
-                stream.Write(buffer);
-            }
-            var fileLen = stream.Length;
 
-            return new ModelUnitMetadata(FilePath, fileLen, buffer.Length);
-        }
         private FileStream GetRead()
         {
             return new FileStream(FilePath, new FileStreamOptions()
@@ -109,7 +114,7 @@ namespace QuickyTree.FileUtils
             {
                 BufferSize = 4096 / 2,
                 Access = FileAccess.Write,
-                Mode = FileMode.OpenOrCreate,
+                Mode = FileMode.Append,
                 Options = FileOptions.SequentialScan,
                 Share = FileShare.None,
             });
