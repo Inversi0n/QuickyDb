@@ -4,6 +4,7 @@ using System;
 using System.Linq.Expressions;
 using QuickyTree.FileUtils;
 using System.Security.Claims;
+using QuickyTree.Models.Attributes;
 
 namespace QuickyTree.Tabling
 {
@@ -14,8 +15,18 @@ namespace QuickyTree.Tabling
         {
             Name = typeof(TModel).Name;
             _tableInstance = new FileWrapper<TModel>(Name);
+
+            var properties = typeof(TModel).GetProperties(System.Reflection.BindingFlags.Public);
+            var indexProperties = properties.Where(p => p.GetCustomAttributes(typeof(IndexAttribute), true)?.Length > 0).ToArray(); ;
+            var tempIndexes = new QTree[indexProperties.Length];
+            for (int i = 0; i < indexProperties.Length; i++)
+            {
+                tempIndexes[i] = new QTree();
+            }
+            _indexes = tempIndexes;
         }
         private readonly IFileWrapper<TModel> _tableInstance;
+        private QTree _id = new QTree();
         private QTree[] _indexes = new QTree[1] { new QTree() };
 
         private QTree[] GetIndexes(TModel model)
