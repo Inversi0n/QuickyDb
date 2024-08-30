@@ -9,7 +9,8 @@ namespace Tests
         public void Setup()
         {
         }
-
+        //TODO Make file manager for IFileWrappers
+        //TODO Make parsing expressions: > < contains
         [Test]
         public void Test1()
         {

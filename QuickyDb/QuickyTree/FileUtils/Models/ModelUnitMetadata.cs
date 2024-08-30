@@ -3,6 +3,7 @@
     public class ModelUnitMetadata
     {
         public string FileName { get; set; }
+        public int Page { get; set; }
         public long From { get; set; }
         public int Length { get; set; }
         public ModelUnitMetadata(string fileName, long from, int length)
