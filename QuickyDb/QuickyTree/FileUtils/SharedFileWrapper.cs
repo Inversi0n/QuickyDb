@@ -11,7 +11,7 @@ namespace QuickyTree.FileUtils
         public SharedFileWrapper(List<FileWrapper<T>> baseFiles)
         {
             _wrappers = baseFiles;
-        }
+        }//TODO Need to make a factory or loader. To create file wrappers[] from out filename(or path with name)
         public string FilePath => throw new NotImplementedException();
 
         public T Read(ModelUnitMetadata fileInfo)
@@ -36,21 +36,24 @@ namespace QuickyTree.FileUtils
                 throw new Exception(exStr);
             }
             //group
-            var groupping = fileInfos.GroupBy(f => f.Page).ToArray();
+            var stack = new Stack<int>(Enumerable.Range(0, 10_000));
+            var groupping = fileInfos.Select(o => new { o, index = stack.Pop() }).GroupBy(f => f.o.Page).ToArray();
 
-            
+            var result = new T[fileInfos.Length];
             foreach (var group in groupping)
             {
                 var grWrappers = group.ToArray();
+                var unitsInpage = grWrappers.Select(w => w.o).ToArray();
+                var indexes = grWrappers.Select(w => w.index).ToArray();
+
                 var page = group.Key;
-                var wrResult = _wrappers[page].Reads(grWrappers);
-
-                fileInfos[0]
+                var wrResult = _wrappers[page].Reads(unitsInpage);
+                for (var i = 0; i < wrResult.Length; i++)
+                {
+                    result[indexes[i]] = wrResult[i];
+                }
             }
-            var wrapper = _wrappers[fileInfo.Page];
-            var res = wrapper.Read(fileInfo);
-
-            return res;
+            return result;
         }
 
         public ModelUnitMetadata Write(T data)

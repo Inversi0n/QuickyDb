@@ -9,16 +9,27 @@ namespace Tests
         public void Setup()
         {
         }
+
+        [Test]
+        public void ExpressionParsing()
+        {
+            DataQuickSet<TestModel> quickSet = new DataQuickSet<TestModel>();
+
+            var val = 5; 
+            var qs = quickSet.Search(a => Math.Pow(val, 2) >= a.Id+1);
+        }
+
         //TODO Make file manager for IFileWrappers
         //TODO Make parsing expressions: > < contains
         [Test]
         public void Test1()
         {
             DataQuickSet<TestModel> quickSet = new DataQuickSet<TestModel>();
+
+            var val = 5;
             quickSet.Add(new TestModel(1));
-            var added = quickSet.Search(1);
             quickSet.Add(new TestModel(2));
-            added = quickSet.Search(2);
+            var added = quickSet.Search(2);
             quickSet.Add(new TestModel(3));
             added = quickSet.Search(3);
             quickSet.Add(new TestModel(4));
@@ -45,7 +56,7 @@ namespace Tests
             }
             public TestModel()
             {
-                
+
             }
         }
     }

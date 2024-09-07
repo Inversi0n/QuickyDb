@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using QuickyTree.FileUtils;
 using QuickyTree.Models.Attributes;
 using QuickyTree.Models;
+using System.Diagnostics;
 
 namespace QuickyTree.Tabling
 {
@@ -17,7 +18,7 @@ namespace QuickyTree.Tabling
         {
             Name = typeof(TModel).Name;
             Path = path;
-            _fileWrapper = new FileWrapper<TModel>(Name);
+            _fileWrapper = new FileWrapper<TModel>(Name); //TODO Add shared mapper
 
             var properties = typeof(TModel).GetProperties(System.Reflection.BindingFlags.Public);
             var indexProperties = properties.Where(p => p.GetCustomAttributes(typeof(IndexAttribute), true)?.Length > 0).ToArray(); ;
@@ -83,18 +84,55 @@ namespace QuickyTree.Tabling
         }
         public IQueryable<QNode> Search(Expression<Func<TModel, bool>> expression)
         {
-            //Parsing expression operations
+            //Selection = "1";
+            //Example<QNode, bool>(p => p.Value == Selection);
 
+            //var body = expression.Body;
+            ////var rightBody = expression
+            //var isNullOrWhiteSpaceMethod = typeof(string).GetMethod(nameof(string.IsNullOrWhiteSpace));
 
-            //applying expressoins
-
-            //combining results
-
-            var foundIndexes = _indexes.Where(i => true).ToArray();
-            foundIndexes.Select(i => i.Search(0));
-
-
+            Example(expression);
             return null;
+        }
+        public double Selection { get; set; }
+
+        public void Example<T, TResult>(Expression<Func<T, TResult>> exp)
+        {
+            if (exp.Body is BinaryExpression equality)
+            {
+                //BinaryExpression equality = (BinaryExpression)exp.Body;
+                var nodeType = equality.NodeType;
+                var method = equality.Method;
+
+                if (equality.Left != null)
+                {
+                    
+                }
+
+                Debug.Assert(equality.NodeType == ExpressionType.GreaterThanOrEqual);
+
+                // Note that you need to know the type of the rhs of the equality
+                var rightAccessorExpression = Expression.Lambda<Func<double>>(equality.Right);
+                var leftAccessorExpression = Expression.Lambda<Func<double>>(equality.Left);
+                Func<double> rightAccessor = rightAccessorExpression.Compile();
+                Func<double> leftAccessor = leftAccessorExpression.Compile();
+                var rightValue = rightAccessor();
+                var leftValue = leftAccessor();
+                
+                Debug.Assert(rightValue == Selection);
+            }
+            else
+            {
+                var a = 0;
+            }
+        }
+        enum ExpressionAction
+        {
+            Compare,
+            StringContains,
+            ContainsInArray,
+
+
         }
     }
 }
