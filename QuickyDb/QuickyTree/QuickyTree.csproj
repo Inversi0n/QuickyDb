@@ -11,4 +11,9 @@
     <PackageReference Include="System.Memory.Data" Version="8.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="SqlParsing\Models\" />
+    <Folder Include="SqlParsing\Querying\" />
+  </ItemGroup>
+
 </Project>
