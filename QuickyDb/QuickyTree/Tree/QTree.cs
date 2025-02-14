@@ -8,7 +8,7 @@ public partial class QTree
 {
     public QNode Root { get; set; }
 
-    public QNode Add(IComparable item, ModelUnitMetadata storingData)
+    public QNode Add(IComparable item, SavedLocationMetadata storingData)
     {
         if (Root == null)
         {

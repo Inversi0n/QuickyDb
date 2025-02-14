@@ -1,6 +1,5 @@
 ﻿using QuickyTree.Interfaces;
 using QuickyTree.Tree;
-using System;
 using System.Linq.Expressions;
 using QuickyTree.FileUtils;
 using QuickyTree.Models.Attributes;
@@ -18,7 +17,7 @@ public class DataQuickSet<TModel> where TModel : IModel, new()
     {
         Name = typeof(TModel).Name;
         Path = path;
-        _fileWrapper = new FileWrapper<TModel>(Name); //TODO Add shared mapper
+        _fileWrapper = new DfileService<TModel>(Name); //TODO Add shared mapper
 
         var properties = typeof(TModel).GetProperties(System.Reflection.BindingFlags.Public);
         var indexProperties = properties.Where(p => p.GetCustomAttributes(typeof(IndexAttribute), true)?.Length > 0).ToArray(); ;

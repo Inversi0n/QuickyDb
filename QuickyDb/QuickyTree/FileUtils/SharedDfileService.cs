@@ -4,17 +4,17 @@ using System.IO;
 
 namespace QuickyTree.FileUtils;
 
-public class SharedFileWrapper<T> : IFileWrapper<T>
+public class SharedDfileService<T> : IFileWrapper<T>
     where T : new()
 {
-    private List<FileWrapper<T>> _wrappers;
-    public SharedFileWrapper(List<FileWrapper<T>> baseFiles)
+    private List<DfileService<T>> _wrappers;
+    public SharedDfileService(List<DfileService<T>> baseFiles)
     {
         _wrappers = baseFiles;
     }//TODO Need to make a factory or loader. To create file wrappers[] from out filename(or path with name)
     public string FilePath => throw new NotImplementedException();
 
-    public T Read(ModelUnitMetadata fileInfo)
+    public T Read(SavedLocationMetadata fileInfo)
     {
         if (fileInfo.Page < 0 || fileInfo.Page >= _wrappers.Count)
         {
@@ -27,7 +27,7 @@ public class SharedFileWrapper<T> : IFileWrapper<T>
         return res;
     }
 
-    public T[] Reads(ModelUnitMetadata[] fileInfos)
+    public T[] Reads(SavedLocationMetadata[] fileInfos)
     {
         if (fileInfos.Any(f => f.Page < 0 || f.Page >= _wrappers.Count))
         {
@@ -56,13 +56,13 @@ public class SharedFileWrapper<T> : IFileWrapper<T>
         return result;
     }
 
-    public ModelUnitMetadata Write(T data)
+    public SavedLocationMetadata Write(T data)
     {
         var wrapper = _wrappers.Last();
 
         if (true)
         {
-            _wrappers.Add(new FileWrapper<T>(FilePath));
+            _wrappers.Add(new DfileService<T>(FilePath));
             wrapper = _wrappers.Last();
         }
 

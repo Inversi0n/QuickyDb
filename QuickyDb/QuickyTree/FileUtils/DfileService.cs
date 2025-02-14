@@ -2,21 +2,24 @@
 using Newtonsoft.Json.Bson;
 using QuickyTree.FileUtils.Models;
 using QuickyTree.Interfaces;
-using System.IO;
 
 namespace QuickyTree.FileUtils;
 
-public class FileWrapper<T> : IFileWrapper<T> where T : new()
+/// <summary>
+/// Manages lockable read/write operations
+/// </summary>
+/// <typeparam name="TModel"></typeparam>
+public class DfileService<TModel> : IFileWrapper<TModel> where TModel : new()
 {
     public string FilePath { get; private set; }
 
-    public FileWrapper(string filePath)
+    public DfileService(string filePath)
     {
         FilePath = filePath;
     }
     private readonly object _lock = new object();
 
-    public ModelUnitMetadata Write(T data)
+    public SavedLocationMetadata Write(TModel data)
     {
         using var stream = GetWrite();
         var buffer = ToBson(data);//Encoding.UTF8.GetBytes(data);
@@ -28,9 +31,9 @@ public class FileWrapper<T> : IFileWrapper<T> where T : new()
         }
         var fileLen = stream.Length;
 
-        return new ModelUnitMetadata(FilePath, position/*fileLen - buffer.Length*/, buffer.Length);
+        return new SavedLocationMetadata(FilePath, position/*fileLen - buffer.Length*/, buffer.Length);
     }
-    public T Read(ModelUnitMetadata fileInfo)
+    public TModel Read(SavedLocationMetadata fileInfo)
     {
         using var stream = GetRead();
 
@@ -47,16 +50,16 @@ public class FileWrapper<T> : IFileWrapper<T> where T : new()
     }
 
 
-    public T[] Reads(ModelUnitMetadata[] fileInfos)
+    public TModel[] Reads(SavedLocationMetadata[] fileInfos)
     {
         using var stream = GetRead();
 
         var orderedfileInfos = fileInfos.OrderBy(fi1 => fi1.From).ToArray(); ;
 
-        var results = new List<T>(fileInfos.Length);
+        var results = new List<TModel>(fileInfos.Length);
         for (int i = 0; i < orderedfileInfos.Length; i++)
         {
-            ModelUnitMetadata fileInfo = orderedfileInfos[i];
+            SavedLocationMetadata fileInfo = orderedfileInfos[i];
 
             var j = 1;
             var totalLength = fileInfo.Length;
@@ -119,7 +122,7 @@ public class FileWrapper<T> : IFileWrapper<T> where T : new()
         });
     }
 
-    public static byte[] ToBson(T value)
+    public static byte[] ToBson(TModel value)
     {
         using (MemoryStream ms = new MemoryStream())
         using (BsonDataWriter datawriter = new BsonDataWriter(ms))
@@ -130,13 +133,13 @@ public class FileWrapper<T> : IFileWrapper<T> where T : new()
         }
     }
 
-    public static T FromBson(byte[] data)
+    public static TModel FromBson(byte[] data)
     {
         using (MemoryStream ms = new MemoryStream(data))
         using (BsonDataReader reader = new BsonDataReader(ms))
         {
             JsonSerializer serializer = new JsonSerializer();
-            return serializer.Deserialize<T>(reader);
+            return serializer.Deserialize<TModel>(reader);
         }
     }
 }
