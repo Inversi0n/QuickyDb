@@ -7,12 +7,14 @@ namespace QuickyTree.FileUtils;
 public class SharedDfileService<T> : IFileWrapper<T>
     where T : new()
 {
-    private List<DfileService<T>> _wrappers;
-    public SharedDfileService(List<DfileService<T>> baseFiles)
+    public string FilePath => throw new NotImplementedException();
+
+    public SharedDfileService(List<DfileService<T>> baseFiles, SavingSeparationConfigModel savingConfig)
     {
         _wrappers = baseFiles;
     }//TODO Need to make a factory or loader. To create file wrappers[] from out filename(or path with name)
-    public string FilePath => throw new NotImplementedException();
+    private readonly List<DfileService<T>> _wrappers;
+    private readonly SavingSeparationConfigModel _config;
 
     public T Read(SavedLocationMetadata fileInfo)
     {
