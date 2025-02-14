@@ -1,7 +1,6 @@
-﻿namespace QuickyTree.FileUtils.Models
+﻿namespace QuickyTree.FileUtils.Models;
+
+public class FileMetadata
 {
-    public class FileMetadata
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

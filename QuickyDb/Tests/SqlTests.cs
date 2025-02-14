@@ -4,19 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tests
+namespace Tests;
+
+public class SqlTests
 {
-    public class SqlTests
+    [SetUp]
+    public void Setup()
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
+    }
 
-        [Test]
-        public void Test1()
-        {
+    [Test]
+    public void Test1()
+    {
 
-        }
     }
 }

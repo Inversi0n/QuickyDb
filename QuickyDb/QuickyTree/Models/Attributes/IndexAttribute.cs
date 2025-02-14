@@ -1,7 +1,6 @@
-﻿namespace QuickyTree.Models.Attributes
-{
-    public class IndexAttribute:Attribute
-    {
+﻿namespace QuickyTree.Models.Attributes;
 
-    }
+public class IndexAttribute:Attribute
+{
+
 }

@@ -2,132 +2,131 @@
 using QuickyTree.Interfaces;
 using System.ComponentModel;
 
-namespace QuickyTree.Tree
+namespace QuickyTree.Tree;
+
+public partial class QTree
 {
-    public partial class QTree
+    public QNode Root { get; set; }
+
+    public QNode Add(IComparable item, ModelUnitMetadata storingData)
     {
-        public QNode Root { get; set; }
-
-        public QNode Add(IComparable item, ModelUnitMetadata storingData)
+        if (Root == null)
         {
-            if (Root == null)
-            {
-                Root = new QNode(item, null, storingData);
-                return Root;
-            }
+            Root = new QNode(item, null, storingData);
+            return Root;
+        }
 
-            var curNode = Root;
-            while (true)
+        var curNode = Root;
+        while (true)
+        {
+            if (curNode.Value.CompareTo(item) > 0)
             {
-                if (curNode.Value.CompareTo(item) > 0)
+                if (curNode.LeftNode == null)
                 {
-                    if (curNode.LeftNode == null)
-                    {
-                        curNode.LeftNode = new QNode(item, curNode, storingData);
-                        return curNode.LeftNode;
-                    }
-                    curNode = curNode.LeftNode;
+                    curNode.LeftNode = new QNode(item, curNode, storingData);
+                    return curNode.LeftNode;
                 }
-                else
-                {
-                    if (curNode.RightNode == null)
-                    {
-                        curNode.RightNode = new QNode(item, curNode, storingData);
-                        return curNode.RightNode;
-                    }
-                    curNode = curNode.RightNode;
-                }
+                curNode = curNode.LeftNode;
             }
-
-        }
-
-        public QNode Search(IComparable item)
-        {
-            return FindNode(Root, item);
-        }
-        public QNode[] SearchAll(IComparable[] items)
-        {
-            var curNode = Root;
-
-            var result = new QNode[items.Length];
-            for (int i = 0; i < items.Length; i++)
+            else
             {
-                var item = items[i];
-                var foundNode = FindNode(curNode, item);
-                result[i] = foundNode;
-                if (i == items.Length - 1)
-                    continue;
-
-                var nextItem = items[i + 1];
-                var top = DownFindNode(foundNode, nextItem);
-            }
-            return result;
-        }
-        private QNode DownFindNode(QNode curNode, IComparable item)
-        {
-            while (true)
-            {
-                var compareRes = curNode.Value.CompareTo(item);
-                if (compareRes == 0)
-                    return curNode;
-
-                var parent = curNode.Parent;
-                if (parent == null)
-                    return curNode;
-
-                compareRes = parent.Value.CompareTo(item);
-                if (compareRes == 0)
-                    return curNode;
-
-                var leftCompare = parent.LeftNode?.Value.CompareTo(item) ?? -1;
-                var rightCompare = parent.RightNode?.Value.CompareTo(item) ?? 1;
-                if (leftCompare == -1
-                    && rightCompare == 1)
-                    return parent;
-
-                curNode = parent;
-            }
-        }
-        private static QNode FindNode(QNode curNode, IComparable item)
-        {
-            while (true)
-            {
-                var compareRes = curNode.Value.CompareTo(item);
-                if (compareRes == 0)
-                    return curNode;
-
-                if (compareRes > 0)
+                if (curNode.RightNode == null)
                 {
-                    if (curNode.LeftNode == null)
-                    {
-                        throw new ApplicationException($"Unable to find {item} element");
-                    }
-                    curNode = curNode.LeftNode;
+                    curNode.RightNode = new QNode(item, curNode, storingData);
+                    return curNode.RightNode;
                 }
-                else
-                {
-                    if (curNode.RightNode == null)
-                    {
-                        throw new ApplicationException($"Unable to find {item} element");
-                    }
-                    curNode = curNode.RightNode;
-                }
+                curNode = curNode.RightNode;
             }
-        }
-
-
-        public void Update(IComparable item)
-        {
-
-        }
-        public QNode Remove(IComparable item)
-        {
-            throw new NotImplementedException();
-        }
-        public void Delete(IComparable item)
-        {
-
         }
 
     }
+
+    public QNode Search(IComparable item)
+    {
+        return FindNode(Root, item);
+    }
+    public QNode[] SearchAll(IComparable[] items)
+    {
+        var curNode = Root;
+
+        var result = new QNode[items.Length];
+        for (int i = 0; i < items.Length; i++)
+        {
+            var item = items[i];
+            var foundNode = FindNode(curNode, item);
+            result[i] = foundNode;
+            if (i == items.Length - 1)
+                continue;
+
+            var nextItem = items[i + 1];
+            var top = DownFindNode(foundNode, nextItem);
+        }
+        return result;
+    }
+    private QNode DownFindNode(QNode curNode, IComparable item)
+    {
+        while (true)
+        {
+            var compareRes = curNode.Value.CompareTo(item);
+            if (compareRes == 0)
+                return curNode;
+
+            var parent = curNode.Parent;
+            if (parent == null)
+                return curNode;
+
+            compareRes = parent.Value.CompareTo(item);
+            if (compareRes == 0)
+                return curNode;
+
+            var leftCompare = parent.LeftNode?.Value.CompareTo(item) ?? -1;
+            var rightCompare = parent.RightNode?.Value.CompareTo(item) ?? 1;
+            if (leftCompare == -1
+                && rightCompare == 1)
+                return parent;
+
+            curNode = parent;
+        }
+    }
+    private static QNode FindNode(QNode curNode, IComparable item)
+    {
+        while (true)
+        {
+            var compareRes = curNode.Value.CompareTo(item);
+            if (compareRes == 0)
+                return curNode;
+
+            if (compareRes > 0)
+            {
+                if (curNode.LeftNode == null)
+                {
+                    throw new ApplicationException($"Unable to find {item} element");
+                }
+                curNode = curNode.LeftNode;
+            }
+            else
+            {
+                if (curNode.RightNode == null)
+                {
+                    throw new ApplicationException($"Unable to find {item} element");
+                }
+                curNode = curNode.RightNode;
+            }
+        }
+    }
+
+
+    public void Update(IComparable item)
+    {
+
+    }
+    public QNode Remove(IComparable item)
+    {
+        throw new NotImplementedException();
+    }
+    public void Delete(IComparable item)
+    {
+
+    }
+
 }

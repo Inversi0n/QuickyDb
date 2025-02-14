@@ -1,6 +1,5 @@
-﻿namespace QuickyTree.FileUtils.Models
+﻿namespace QuickyTree.FileUtils.Models;
+
+public class FileNode
 {
-    public class FileNode
-    {
-    }
 }

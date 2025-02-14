@@ -1,7 +1,6 @@
-﻿namespace QuickyTree.FileUtils
+﻿namespace QuickyTree.FileUtils;
+
+public static class FileStatic
 {
-    public static class FileStatic
-    {
-        public static Dictionary<string, object> Locks { get; } = new Dictionary<string, object>();
-    }
+    public static Dictionary<string, object> Locks { get; } = new Dictionary<string, object>();
 }

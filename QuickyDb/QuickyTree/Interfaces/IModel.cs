@@ -1,7 +1,6 @@
-﻿namespace QuickyTree.Interfaces
+﻿namespace QuickyTree.Interfaces;
+
+public interface IModel
 {
-    public interface IModel
-    {
-        public IComparable Id { get; set; }
-    }
+    public IComparable Id { get; set; }
 }
