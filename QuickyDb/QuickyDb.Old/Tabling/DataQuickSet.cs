@@ -1,13 +1,14 @@
-﻿using QuickyTree.Interfaces;
-using QuickyTree.Tree;
-using System.Linq.Expressions;
-using QuickyTree.FileUtils;
-using QuickyTree.Models.Attributes;
+﻿using QuickyTree.FileUtils;
+using QuickyTree.Interfaces;
 using QuickyTree.Models;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Linq;
+using QuickyTree.Models.Attributes;
+using QuickyTree.Tree;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace QuickyTree.Tabling
 {
@@ -22,7 +23,7 @@ namespace QuickyTree.Tabling
             Path = path;
             _fileWrapper = new DfileService<TModel>(Name); //TODO Add shared mapper
 
-            var properties = typeof(TModel).GetProperties(System.Reflection.BindingFlags.Public);
+            var properties = typeof(TModel).GetProperties(BindingFlags.Public | BindingFlags.Instance);
             var indexProperties = properties.Where(p => p.GetCustomAttributes(typeof(IndexAttribute), true)?.Length > 0).ToArray(); ;
             var tempIndexes = new QTree[indexProperties.Length];
             for (int i = 0; i < indexProperties.Length; i++)
