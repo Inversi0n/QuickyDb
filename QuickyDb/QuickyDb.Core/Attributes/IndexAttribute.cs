@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickyTree.Models.Attributes
+namespace QuickyDb.Core.Attributes
 {
     public class IndexAttribute:Attribute
     {

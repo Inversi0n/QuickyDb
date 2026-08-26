@@ -1,6 +1,6 @@
-﻿using QuickyTree.FileUtils.Models;
+﻿using QuickyDb.Old.FileUtils.Models;
 
-namespace QuickyTree.Interfaces
+namespace QuickyDb.Old.Interfaces
 {
     public interface IFileWrapper<T> where T : new()
     {

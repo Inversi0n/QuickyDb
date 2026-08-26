@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="QuickyDb.Core/QuickyDb.Core.csproj" />
+  <Project Path="QuickyDb.Old/QuickyDb.Old.csproj" />
+  <Project Path="QuickyDb.Rb/QuickyDb.Rb.csproj" />
+  <Project Path="QuickyDb.Tests/QuickyDb.Tests.csproj" />
+</Solution>

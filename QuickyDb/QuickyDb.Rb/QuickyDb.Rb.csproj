@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QuickyDb.Core\QuickyDb.Core.csproj" />
-    <ProjectReference Include="..\QuickyDb.Old\QuickyDb.Old.csproj" />
   </ItemGroup>
 
 </Project>

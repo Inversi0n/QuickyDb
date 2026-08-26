@@ -6,6 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="SqlParsing\Models\" />
+    <Folder Include="SqlParsing\Querying\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\QuickyDb.Core\QuickyDb.Core.csproj" />
   </ItemGroup>
 

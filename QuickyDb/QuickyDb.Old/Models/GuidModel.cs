@@ -1,7 +1,7 @@
-﻿using QuickyTree.Interfaces;
+﻿using QuickyDb.Old.Interfaces;
 using System;
 
-namespace QuickyTree.Models
+namespace QuickyDb.Old.Models
 {
     public class GuidModel:IModel
     {

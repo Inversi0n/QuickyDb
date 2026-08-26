@@ -1,13 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
-using QuickyTree.FileUtils.Models;
-using QuickyTree.Interfaces;
+using QuickyDb.Old.FileUtils.Models;
+using QuickyDb.Old.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace QuickyTree.FileUtils
+namespace QuickyDb.Old.FileUtils
 {
     /// <summary>
     /// Manages lockable read/write operations

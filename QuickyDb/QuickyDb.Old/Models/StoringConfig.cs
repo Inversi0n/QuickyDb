@@ -1,4 +1,4 @@
-﻿namespace QuickyTree.Models
+﻿namespace QuickyDb.Old.Models
 {
     public class StoringConfig
     {

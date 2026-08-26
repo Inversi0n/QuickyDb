@@ -1,4 +1,4 @@
-﻿namespace QuickyTree.FileUtils.Models
+﻿namespace QuickyDb.Old.FileUtils.Models
 {
     public class FileMetadata
     {

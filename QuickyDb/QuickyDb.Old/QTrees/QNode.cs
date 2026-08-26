@@ -1,7 +1,7 @@
-﻿using QuickyTree.FileUtils.Models;
+﻿using QuickyDb.Old.FileUtils.Models;
 using System;
 
-namespace QuickyTree.Tree
+namespace QuickyDb.Old.QTrees
 {
     public class QNode
     {

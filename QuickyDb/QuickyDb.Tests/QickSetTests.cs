@@ -1,7 +1,7 @@
-﻿using QuickyTree.Models;
-using QuickyTree.Tabling;
+﻿using QuickyDb.Old.Models;
+using QuickyDb.Old.Tabling;
 
-namespace Tests
+namespace QuickyDb.Tests
 {
     internal class QickSetTests
     {

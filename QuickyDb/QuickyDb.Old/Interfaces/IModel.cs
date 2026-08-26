@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickyTree.Interfaces
+namespace QuickyDb.Old.Interfaces
 {
     public interface IModel
     {

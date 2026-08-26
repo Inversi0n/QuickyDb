@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuickyTree.FileUtils.Models
+namespace QuickyDb.Old.FileUtils.Models
 {
     public class SavingSeparationConfigModel
     {

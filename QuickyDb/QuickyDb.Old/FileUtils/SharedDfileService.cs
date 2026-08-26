@@ -1,10 +1,10 @@
-﻿using QuickyTree.FileUtils.Models;
-using QuickyTree.Interfaces;
+﻿using QuickyDb.Old.FileUtils.Models;
+using QuickyDb.Old.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickyTree.FileUtils
+namespace QuickyDb.Old.FileUtils
 {
     public class SharedDfileService<T> : IFileWrapper<T>
         where T : new()

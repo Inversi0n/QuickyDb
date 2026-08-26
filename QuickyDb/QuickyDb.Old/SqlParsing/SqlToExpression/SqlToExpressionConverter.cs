@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace QuickyTree.SqlParsing.SqlToExpression
+namespace QuickyDb.Old.SqlParsing.SqlToExpression
 {
     public class Converter
     {

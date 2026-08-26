@@ -1,4 +1,4 @@
-﻿namespace Tests
+﻿namespace QuickyDb.Tests
 {
     public class SqlTests
     {

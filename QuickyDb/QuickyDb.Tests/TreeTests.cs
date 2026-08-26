@@ -1,6 +1,6 @@
 using QuickyTree.Tree;
 
-namespace Tests
+namespace QuickyDb.Tests
 {
     public class TreeTests
     {
