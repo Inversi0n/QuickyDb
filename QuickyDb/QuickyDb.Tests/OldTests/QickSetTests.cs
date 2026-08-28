@@ -1,7 +1,7 @@
 ﻿using QuickyDb.Old.Models;
 using QuickyDb.Old.Tabling;
 
-namespace QuickyDb.Tests
+namespace QuickyDb.Tests.OldTests
 {
     internal class QickSetTests
     {

@@ -1,7 +1,7 @@
-﻿using QuickyTree.FileUtils;
-using QuickyTree.Interfaces;
-using QuickyTree.Models;
-using QuickyTree.Models.Attributes;
+﻿using QuickyDb.Old.Interfaces;
+using QuickyDb.Old.Models;
+using QuickyDb.Old.QTrees;
+using QuickyDb.Old.FileUtils;
 using QuickyTree.Tree;
 using System;
 using System.Collections.Generic;
@@ -9,8 +9,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using QuickyDb.Core.Common.Attributes;
 
-namespace QuickyTree.Tabling
+namespace QuickyDb.Old.Tabling
 {
     public class DataQuickSet<TModel> where TModel : IModel, new()
     {
