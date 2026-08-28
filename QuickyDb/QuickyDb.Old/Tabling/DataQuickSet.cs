@@ -9,7 +9,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using QuickyDb.Core.Attributes;
+using QuickyDb.Core.Common.Attributes;
 
 namespace QuickyDb.Old.Tabling
 {
