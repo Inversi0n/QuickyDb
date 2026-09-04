@@ -2,20 +2,19 @@
 using System;
 using System.Reflection;
 
-namespace QuickyDb.Rb.IndexedStore
+namespace QuickyDb.Rb.IndexedStore;
+
+internal sealed class SimpleIndexedStore<TModel>: IndexedStoreBase<TModel>
 {
-    internal sealed class SimpleIndexedStore<TModel>: IndexedStoreBase<TModel>
+    public PropertyInfo Property { get; }
+
+    private readonly Func<TModel, object> _getValue;
+
+    public SimpleIndexedStore(PropertyInfo property):base()
     {
-        public PropertyInfo Property { get; }
+        Property = property;
+        _getValue = CompileGetter(property);
 
-        private readonly Func<TModel, object> _getValue;
-
-        public SimpleIndexedStore(PropertyInfo property):base()
-        {
-            Property = property;
-            _getValue = CompileGetter(property);
-
-            GetKeys = model => ByteEncoder.Encode(_getValue(model));
-        }       
-    }
+        GetKeys = model => ByteEncoder.Encode(_getValue(model));
+    }       
 }
