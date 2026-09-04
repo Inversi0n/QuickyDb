@@ -3,29 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 
-namespace QuickyDb.Rb
+namespace QuickyDb.Rb.IndexedStore
 {
-    internal sealed class IndexedStore<TModel>
+    internal abstract class IndexedStoreBase<TModel>
     {
-        public PropertyInfo Property { get; }
+        protected readonly SortedSet<KeyGroup<TModel>> _entries;
+        protected Func<TModel, byte[]> GetKeys;
 
-        private readonly Func<TModel, object> _getValue;
-        private readonly SortedSet<KeyGroup<TModel>> _entries;
-
-        public IndexedStore(PropertyInfo property)
+        public IndexedStoreBase()
         {
-            Property = property;
-            _getValue = CompileGetter(property);
-
             var comparer = Comparer<KeyGroup<TModel>>.Create(
                 (a, b) => ByteArrayComparer.Instance.Compare(a.Key, b.Key));
             _entries = new SortedSet<KeyGroup<TModel>>(comparer);
         }
 
+
         public void Add(TModel model)
         {
-            var key = ByteEncoder.Encode(_getValue(model));
+            var key = GetKeys(model);
             var probe = new KeyGroup<TModel>(key);
 
             if (!_entries.TryGetValue(probe, out var group))
@@ -38,7 +35,7 @@ namespace QuickyDb.Rb
 
         public void Remove(TModel model)
         {
-            var key = ByteEncoder.Encode(_getValue(model));
+            var key = GetKeys(model);
             var probe = new KeyGroup<TModel>(key);
             if (!_entries.TryGetValue(probe, out var group)) return;
 
@@ -98,7 +95,7 @@ namespace QuickyDb.Rb
             }
         }
 
-        private static Func<TModel, object> CompileGetter(PropertyInfo property)
+        protected static Func<TModel, object> CompileGetter(PropertyInfo property)
         {
             var param = Expression.Parameter(typeof(TModel), "m");
             var propertyAccess = Expression.Property(param, property);
