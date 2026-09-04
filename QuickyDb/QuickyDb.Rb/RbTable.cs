@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace QuickyDb.Rb
 {
@@ -30,7 +29,10 @@ namespace QuickyDb.Rb
 
             _indexes = new Dictionary<string, IndexedStoreBase<TModel>>();
             foreach (var prop in indexProperties)
+            {
+                ValidateIndexablePropertyType(prop);
                 _indexes.Add(prop.Name, new SimpleIndexedStore<TModel>(prop));
+            }
 
             _all = new HashSet<TModel>();
 
@@ -56,7 +58,23 @@ namespace QuickyDb.Rb
              .ToArray();
 
             foreach (var cascade in cascadeProperties)
+            {
+                foreach (var prop in cascade)
+                    ValidateIndexablePropertyType(prop);
                 _indexes.Add(cascade.Key, new CascadeIndexedStore<TModel>(cascade.ToArray()));
+            }
+        }
+
+        private static void ValidateIndexablePropertyType(PropertyInfo property)
+        {
+            var type = property.PropertyType;
+            bool isCollection = type != typeof(string)
+                && typeof(System.Collections.IEnumerable).IsAssignableFrom(type);
+
+            if (isCollection)
+                throw new InvalidOperationException(
+                    $"Свойство {property.Name} — коллекция ({type.Name}); индекс (обычный или составной) " +
+                    "по коллекциям пока не поддерживается: нет естественного полного порядка для memcmp-сравнения.");
         }
 
         public IEnumerable<TModel> Search(Expression<Func<TModel, bool>> predicate) => _query.Search(predicate);
