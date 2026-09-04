@@ -4,75 +4,74 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace QuickyDb.Old.FileUtils
+namespace QuickyDb.Old.FileUtils;
+
+public class SharedDfileService<T> : IFileWrapper<T>
+    where T : new()
 {
-    public class SharedDfileService<T> : IFileWrapper<T>
-        where T : new()
+    public string FilePath => throw new NotImplementedException();
+
+    public SharedDfileService(List<DfileService<T>> baseFiles, SavingSeparationConfigModel savingConfig)
     {
-        public string FilePath => throw new NotImplementedException();
+        _wrappers = baseFiles;
+    }//TODO Need to make a factory or loader. To create file wrappers[] from out filename(or path with name)
+    private readonly List<DfileService<T>> _wrappers;
+    private readonly SavingSeparationConfigModel _config;
 
-        public SharedDfileService(List<DfileService<T>> baseFiles, SavingSeparationConfigModel savingConfig)
+    public T Read(SavedLocationMetadata fileInfo)
+    {
+        if (fileInfo.Page < 0 || fileInfo.Page >= _wrappers.Count)
         {
-            _wrappers = baseFiles;
-        }//TODO Need to make a factory or loader. To create file wrappers[] from out filename(or path with name)
-        private readonly List<DfileService<T>> _wrappers;
-        private readonly SavingSeparationConfigModel _config;
+            var exStr = $"Bad page in model. requesed {fileInfo.Page}. But length is {_wrappers.Count}";
+            throw new Exception(exStr);
+        }
+        var wrapper = _wrappers[fileInfo.Page];
+        var res = wrapper.Read(fileInfo);
 
-        public T Read(SavedLocationMetadata fileInfo)
+        return res;
+    }
+
+    public T[] Reads(SavedLocationMetadata[] fileInfos)
+    {
+        if (fileInfos.Any(f => f.Page < 0 || f.Page >= _wrappers.Count))
         {
-            if (fileInfo.Page < 0 || fileInfo.Page >= _wrappers.Count)
+            //requesed {fileInfo.Page}
+            var exStr = $"Bad page in model. . But length is {_wrappers.Count}";
+            throw new Exception(exStr);
+        }
+        //group
+        var stack = new Stack<int>(Enumerable.Range(0, 10_000));
+        var groupping = fileInfos.Select(o => new { o, index = stack.Pop() }).GroupBy(f => f.o.Page).ToArray();
+
+        var result = new T[fileInfos.Length];
+        foreach (var group in groupping)
+        {
+            var grWrappers = group.ToArray();
+            var unitsInpage = grWrappers.Select(w => w.o).ToArray();
+            var indexes = grWrappers.Select(w => w.index).ToArray();
+
+            var page = group.Key;
+            var wrResult = _wrappers[page].Reads(unitsInpage);
+            for (var i = 0; i < wrResult.Length; i++)
             {
-                var exStr = $"Bad page in model. requesed {fileInfo.Page}. But length is {_wrappers.Count}";
-                throw new Exception(exStr);
+                result[indexes[i]] = wrResult[i];
             }
-            var wrapper = _wrappers[fileInfo.Page];
-            var res = wrapper.Read(fileInfo);
+        }
+        return result;
+    }
 
-            return res;
+    public SavedLocationMetadata Write(T data)
+    {
+        var wrapper = _wrappers.Last();
+
+        if (true)
+        {
+            _wrappers.Add(new DfileService<T>(FilePath));
+            wrapper = _wrappers.Last();
         }
 
-        public T[] Reads(SavedLocationMetadata[] fileInfos)
-        {
-            if (fileInfos.Any(f => f.Page < 0 || f.Page >= _wrappers.Count))
-            {
-                //requesed {fileInfo.Page}
-                var exStr = $"Bad page in model. . But length is {_wrappers.Count}";
-                throw new Exception(exStr);
-            }
-            //group
-            var stack = new Stack<int>(Enumerable.Range(0, 10_000));
-            var groupping = fileInfos.Select(o => new { o, index = stack.Pop() }).GroupBy(f => f.o.Page).ToArray();
+        var res = wrapper.Write(data);
 
-            var result = new T[fileInfos.Length];
-            foreach (var group in groupping)
-            {
-                var grWrappers = group.ToArray();
-                var unitsInpage = grWrappers.Select(w => w.o).ToArray();
-                var indexes = grWrappers.Select(w => w.index).ToArray();
-
-                var page = group.Key;
-                var wrResult = _wrappers[page].Reads(unitsInpage);
-                for (var i = 0; i < wrResult.Length; i++)
-                {
-                    result[indexes[i]] = wrResult[i];
-                }
-            }
-            return result;
-        }
-
-        public SavedLocationMetadata Write(T data)
-        {
-            var wrapper = _wrappers.Last();
-
-            if (true)
-            {
-                _wrappers.Add(new DfileService<T>(FilePath));
-                wrapper = _wrappers.Last();
-            }
-
-            var res = wrapper.Write(data);
-
-            return res;
-        }
+        return res;
     }
 }

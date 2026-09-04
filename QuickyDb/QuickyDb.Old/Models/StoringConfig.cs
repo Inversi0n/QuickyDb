@@ -1,10 +1,9 @@
-﻿namespace QuickyDb.Old.Models
+﻿namespace QuickyDb.Old.Models;
+
+public class StoringConfig
 {
-    public class StoringConfig
-    {
-        public long MaxFileSize { get; set; } = 1024 * 1024;
-        public long CurrentSize { get; set; }
-        public long MaxDeadDize { get; set; }
-        public string[] Splits { get; set; }
-    }
+    public long MaxFileSize { get; set; } = 1024 * 1024;
+    public long CurrentSize { get; set; }
+    public long MaxDeadDize { get; set; }
+    public string[] Splits { get; set; }
 }
