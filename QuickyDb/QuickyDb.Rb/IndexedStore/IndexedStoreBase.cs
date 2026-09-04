@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace QuickyDb.Rb.IndexedStore
 {
@@ -93,6 +92,45 @@ namespace QuickyDb.Rb.IndexedStore
                 if (ByteArrayComparer.Instance.Equals(group.Key, excludedKey)) continue;
                 yield return group.Models;
             }
+        }
+
+      
+        // Template for comaring compount indexes      
+        public IEnumerable<List<TModel>> PrefixScan(byte[] prefix)
+        {
+            if (_entries.Count == 0 || prefix.Length == 0) yield break;
+
+            var min = _entries.Min;
+            var max = _entries.Max;
+            if (ByteArrayComparer.Instance.Compare(max.Key, prefix) < 0) yield break;
+
+            var lowerProbe = new KeyGroup<TModel>(prefix);
+            var from = ByteArrayComparer.Instance.Compare(lowerProbe.Key, min.Key) < 0 ? min : lowerProbe;
+
+            var successor = IncrementPrefix(prefix);
+            var upperProbe = successor != null ? new KeyGroup<TModel>(successor) : max;
+
+            foreach (var group in _entries.GetViewBetween(from, upperProbe))
+            {
+                if (successor != null && ByteArrayComparer.Instance.Compare(group.Key, successor) >= 0)
+                    continue; // successor — открытая верхняя граница, не часть диапазона
+                yield return group.Models;
+            }
+        }
+
+        private byte[] IncrementPrefix(byte[] prefix)
+        {
+            var result = (byte[])prefix.Clone();
+            for (int i = result.Length - 1; i >= 0; i--)
+            {
+                if (result[i] != 0xFF)
+                {
+                    result[i]++;
+                    Array.Resize(ref result, i + 1);
+                    return result;
+                }
+            }
+            return null; // префикс — все 0xFF, конечного "следующего" значения не существует
         }
 
         protected static Func<TModel, object> CompileGetter(PropertyInfo property)
