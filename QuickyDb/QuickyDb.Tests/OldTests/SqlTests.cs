@@ -1,16 +1,16 @@
-﻿namespace QuickyDb.Tests.OldTests
+
+namespace QuickyDb.Tests.OldTests;
+
+public class SqlTests
 {
-    public class SqlTests
+    [SetUp]
+    public void Setup()
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
+    }
 
-        [Test]
-        public void Test1()
-        {
+    [Test]
+    public void Test1()
+    {
 
-        }
     }
 }
