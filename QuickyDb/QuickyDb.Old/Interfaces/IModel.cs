@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace QuickyDb.Old.Interfaces
+namespace QuickyDb.Old.Interfaces;
+
+public interface IModel
 {
-    public interface IModel
-    {
-        public IComparable Id { get; set; }
-    }
+    public IComparable Id { get; set; }
 }
