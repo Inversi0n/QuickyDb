@@ -1,6 +1,5 @@
 ﻿using QuickyDb.Core.Common;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace QuickyDb.Rb.IndexedStore
@@ -23,22 +22,24 @@ namespace QuickyDb.Rb.IndexedStore
 
             GetKeys = model =>
             {
-                var span = new Span<byte>();
+                var parts = new byte[_getValues.Length][];
+                int totalLength = 0;
                 for (int i = 0; i < _getValues.Length; i++)
                 {
                     var value = _getValues[i](model);
-                    var key = ByteEncoder.Encode(value);
-                    foreach (var b in key)
-                    {
-                        if (b == 0x00)
-                            span.Fill(0xFF); //TODO Define length by this element
-                        else
-                            span.Fill(b);
-                    }
-                    if (i + 1 < _getValues.Length)
-                        span.Fill(0x00);
+                    bool isLast = i == _getValues.Length - 1;
+                    parts[i] = ByteEncoder.EncodeComponent(value, isLast);
+                    totalLength += parts[i].Length;
                 }
-                return span.ToArray();
+
+                var result = new byte[totalLength];
+                int offset = 0;
+                foreach (var part in parts)
+                {
+                    Buffer.BlockCopy(part, 0, result, offset, part.Length);
+                    offset += part.Length;
+                }
+                return result;
             };
         }
     }
