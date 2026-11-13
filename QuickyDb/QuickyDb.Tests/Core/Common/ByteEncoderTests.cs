@@ -38,6 +38,17 @@ internal class ByteEncoderTests
     private static List<TModel> InKeyOrder<TModel>(CascadeIndexedStore<TModel> store)
         => store.AllExcept(Array.Empty<byte>()).SelectMany(g => g).ToList();
 
+    private static void AssertOrderingPreserved<T>(T[] values, Func<T, byte[]> encode)
+    where T : IComparable<T>
+    {
+        var expectedOrder = values.OrderBy(v => v).ToArray();
+        var actualOrder = values
+            .OrderBy(v => encode(v), ByteArrayComparer.Instance)
+            .ToArray();
+
+        Assert.That(actualOrder, Is.EqualTo(expectedOrder));
+    }
+
     // ---------- ширина ----------
 
     [TestCase((short)1, 2)]
@@ -173,7 +184,7 @@ internal class ByteEncoderTests
     {
         // Фиксирует текущее поведение, о котором говорит TODO в начале ByteEncoder:
         // -0.0 и +0.0 равны численно, но кодируются разными байтами.
-        // Если начнешь приводить -0.0 к +0.0 в кодировщике, замени оба Assert на проверку равенства.
+        // Когда начнём приводить -0.0 к +0.0 в кодировщике, заменим оба Assert на проверку равенства.
         var negativeZeroSingle = BitConverter.Int32BitsToSingle(unchecked((int)0x80000000));
         var negativeZeroDouble = BitConverter.Int64BitsToDouble(unchecked((long)0x8000000000000000));
 
@@ -386,16 +397,5 @@ internal class ByteEncoderTests
     {
         // decimal сознательно не входит в switch — фиксируем текущее (ожидаемое) поведение.
         Assert.Throws<NotSupportedException>(() => ByteEncoder.Encode(3.14m));
-    }
-
-    private static void AssertOrderingPreserved<T>(T[] values, Func<T, byte[]> encode)
-        where T : IComparable<T>
-    {
-        var expectedOrder = values.OrderBy(v => v).ToArray();
-        var actualOrder = values
-            .OrderBy(v => encode(v), ByteArrayComparer.Instance)
-            .ToArray();
-
-        Assert.That(actualOrder, Is.EqualTo(expectedOrder));
     }
 }

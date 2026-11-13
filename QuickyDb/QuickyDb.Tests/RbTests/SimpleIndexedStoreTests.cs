@@ -1,4 +1,5 @@
 ﻿using QuickyDb.Core.Common;
+using QuickyDb.Rb.IndexedStore;
 using QuickyDb.Tests.RbTests.Models;
 using System.Reflection;
 

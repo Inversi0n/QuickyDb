@@ -57,9 +57,6 @@ public class ByteArrayComparerTests
     [Test]
     public void Compare_ShorterPrefixSortsBeforeLongerArray()
     {
-        // Важное свойство для понимания: этот компаратор сам по себе НЕ разруливает
-        // неоднозначность составных ключей (тем и вызвана отдельная EncodeComponent
-        // с терминатором в ветке composite) — здесь просто фиксируем его сырое поведение.
         var shorter = new byte[] { 1, 2 };
         var longer = new byte[] { 1, 2, 3 };
 
