@@ -11,7 +11,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace QuickyTree.Tabling;
+namespace QuickyDb.Old.Tabling;
 
 public class DataQuickSet<TModel> where TModel : IModel, new()
 {
