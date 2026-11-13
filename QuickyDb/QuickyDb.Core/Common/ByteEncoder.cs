@@ -73,37 +73,42 @@ public static class ByteEncoder
     }
 
 
+    // Беззнаковые перегрузки пишут значение как есть, big-endian: порядок байтов
+    // уже совпадает с числовым. Знаковые перегрузки переворачивают знаковый бит
+    // и вызывают беззнаковые, чтобы отрицательные числа шли раньше положительных.
+    // Переворачивать знаковый бит у беззнаковых типов нельзя: значения от 0x8000
+    // (0x80000000, 0x8000000000000000) окажутся раньше значений меньше них.
+
     public static byte[] EncodeInt16(ushort value)
     {
-        ushort flipped = (ushort)(value ^ 0x8000);
-        var bytes = BitConverter.GetBytes(flipped); // перегрузка для ushort -> 2 байта
+        var bytes = BitConverter.GetBytes(value); // 2 байта
         if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
         return bytes;
     }
 
     public static byte[] EncodeInt16(short value)
-        => EncodeInt16(unchecked((ushort)value));
+        => EncodeInt16(unchecked((ushort)((ushort)value ^ 0x8000)));
 
 
     public static byte[] EncodeInt32(uint value)
     {
-        uint flipped = unchecked(value) ^ 0x80000000u;
-        var bytes = BitConverter.GetBytes(flipped);
+        var bytes = BitConverter.GetBytes(value);
         if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
         return bytes;
     }
+
     public static byte[] EncodeInt32(int value)
-         => EncodeInt32(unchecked((uint)value));
+        => EncodeInt32(unchecked((uint)value ^ 0x80000000u));
 
     public static byte[] EncodeInt64(ulong value)
     {
-        ulong flipped = unchecked(value) ^ 0x8000000000000000ul;
-        var bytes = BitConverter.GetBytes(flipped);
+        var bytes = BitConverter.GetBytes(value);
         if (BitConverter.IsLittleEndian) Array.Reverse(bytes);
         return bytes;
     }
+
     public static byte[] EncodeInt64(long value)
-         => EncodeInt64(unchecked((ulong)value));
+        => EncodeInt64(unchecked((ulong)value ^ 0x8000000000000000ul));
 
     public static byte[] EncodeSingle(float value)
     {
