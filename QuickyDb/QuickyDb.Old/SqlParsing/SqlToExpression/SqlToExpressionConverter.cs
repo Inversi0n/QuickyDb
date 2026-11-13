@@ -2,30 +2,29 @@
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace QuickyDb.Old.SqlParsing.SqlToExpression
+namespace QuickyDb.Old.SqlParsing.SqlToExpression;
+
+public class Converter
 {
-    public class Converter
+    public Expression[] Foo(string sql)
     {
-        public Expression[] Foo(string sql)
+        var lines = sql.Split(new char[] { '\n' }).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+
+        Expression curEx = null;
+        foreach (var line in lines)
         {
-            var lines = sql.Split(new char[] { '\n' }).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-
-            Expression curEx = null;
-            foreach (var line in lines)
+            var words = line.Split(new char[] { ',', ' ', '.' }).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
+            foreach (var word in words)
             {
-                var words = line.Split(new char[] { ',', ' ', '.' }).Where(s => !string.IsNullOrWhiteSpace(s)).ToArray();
-                foreach (var word in words)
+                if (curEx == null)
                 {
-                    if (curEx == null)
-                    {
-                        if (word.ToLower() != "select")
-                            throw new Exception($"Expected Select, not {word}");
+                    if (word.ToLower() != "select")
+                        throw new Exception($"Expected Select, not {word}");
 
-                    }
                 }
             }
-            return default;
         }
-    
+        return default;
     }
+
 }
