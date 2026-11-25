@@ -395,7 +395,7 @@ internal class ByteEncoderTests
     [Test]
     public void Encode_UnsupportedType_ThrowsNotSupportedException()
     {
-        // decimal сознательно не входит в switch — фиксируем текущее (ожидаемое) поведение.
+        // decimal сознательно не входит в switch, поэтому фиксируем текущее (ожидаемое) поведение.
         Assert.Throws<NotSupportedException>(() => ByteEncoder.Encode(3.14m));
     }
 }

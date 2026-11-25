@@ -82,7 +82,7 @@ internal class RbTableTests
     public void Remove_LastModelWithSharedKey_KeyGroupGoesAwayEntirely()
     {
         // Регрессия на ветку "if (group.Models.Count == 0) _entries.Remove(group)"
-        // внутри IndexedStore.Remove — если она сломается, тут повиснет старая группа
+        // внутри IndexedStore.Remove: если она сломается, тут повиснет старая группа
         // и Search продолжит (ошибочно) находить одну из уже удалённых моделей.
         var table = new RbTable<TestModelA>();
         var m1 = new TestModelA { V1 = 1, V2 = "same" };

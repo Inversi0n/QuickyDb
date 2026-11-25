@@ -29,7 +29,7 @@ internal class ExpressionParserTests
     [Test]
     public void Parse_ConstantOnLeftSide_FlipsOperatorAndKeepsSemantics()
     {
-        // "5 < i.Id" эквивалентно "i.Id > 5" — паттерн должен вернуть именно это.
+        // "5 < i.Id" эквивалентно "i.Id > 5", парсер должен вернуть именно это.
         Expression<Func<Item, bool>> predicate = i => 5 < i.Id;
         var condition = (ConditionNode)ExpressionParser.Parse(predicate);
 

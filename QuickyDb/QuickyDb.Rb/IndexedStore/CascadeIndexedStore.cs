@@ -1,9 +1,14 @@
-﻿using QuickyDb.Core.Common;
-using System;
+﻿using System;
 using System.Reflection;
+using QuickyDb.Core.Common;
 
 namespace QuickyDb.Rb.IndexedStore;
 
+/// <summary>
+/// <para>Index over several properties at once.</para>
+/// <para>The key is the concatenation of the encoded values in the order of the properties.</para>
+/// </summary>
+/// <typeparam name="TModel">Type of the model.</typeparam>
 internal sealed class CascadeIndexedStore<TModel> : IndexedStoreBase<TModel>
 {
     public PropertyInfo[] Properties { get; }
@@ -20,13 +25,15 @@ internal sealed class CascadeIndexedStore<TModel> : IndexedStoreBase<TModel>
             _getValues[i] = CompileGetter(prop);
         }
 
+        // Строки всех компонентов, кроме последнего, получают терминатор: иначе границы компонентов
+        // в склеенном ключе не различить (ByteEncoder.EncodeComponent).
         GetKeys = model =>
         {
             var parts = new byte[_getValues.Length][];
             int totalLength = 0;
             for (int i = 0; i < _getValues.Length; i++)
             {
-                var value = _getValues[i](model);
+                object value = _getValues[i](model);
                 bool isLast = i == _getValues.Length - 1;
                 parts[i] = ByteEncoder.EncodeComponent(value, isLast);
                 totalLength += parts[i].Length;
