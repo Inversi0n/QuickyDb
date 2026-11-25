@@ -8,7 +8,7 @@ namespace QuickyDb.Core.Common.Attributes;
 /// <para>The components are placed into the key in ascending order of <see cref="Order"/>.</para>
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class CascadeIndexAttribute : Attribute
+public sealed class CompositeIndexAttribute : Attribute
 {
     /// <summary>
     /// Name of the composite index. Properties with the same name belong to the same index.
@@ -25,7 +25,7 @@ public sealed class CascadeIndexAttribute : Attribute
     /// </summary>
     /// <param name="name">Name of the composite index.</param>
     /// <param name="order">Position of the property in the composite key. A smaller value comes first.</param>
-    public CascadeIndexAttribute(string name, uint order)
+    public CompositeIndexAttribute(string name, uint order)
     {
         Name = name;
         Order = order;

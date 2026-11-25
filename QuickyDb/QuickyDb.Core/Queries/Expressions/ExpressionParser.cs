@@ -6,7 +6,7 @@ using QuickyDb.Core.Queries.Expressions.Nodes;
 namespace QuickyDb.Core.Queries.Expressions;
 
 /// <summary>
-/// Converts predicate expressions into trees of <see cref="QueryNode"/>.
+/// Converts predicate expressions into trees of <see cref="QueryNodeBase"/>.
 /// </summary>
 public static class ExpressionParser
 {
@@ -21,10 +21,10 @@ public static class ExpressionParser
     /// <exception cref="NotSupportedException">
     /// The predicate contains an unsupported expression, or a comparison without a model property.
     /// </exception>
-    public static QueryNode Parse<TModel>(Expression<Func<TModel, bool>> predicate)
+    public static QueryNodeBase Parse<TModel>(Expression<Func<TModel, bool>> predicate)
         => ParseNode(predicate.Body, predicate.Parameters[0]);
 
-    private static QueryNode ParseNode(Expression expr, ParameterExpression param)
+    private static QueryNodeBase ParseNode(Expression expr, ParameterExpression param)
     {
         expr = StripConvert(expr);
 

@@ -3,20 +3,20 @@
 /// <summary>
 /// Logical AND of two nodes: a model matches if it matches both of them.
 /// </summary>
-public sealed class AndNode : QueryNode
+public sealed class AndNode : QueryNodeBase
 {
     /// <summary>Left operand.</summary>
-    public QueryNode Left { get; }
+    public QueryNodeBase Left { get; }
 
     /// <summary>Right operand.</summary>
-    public QueryNode Right { get; }
+    public QueryNodeBase Right { get; }
 
     /// <summary>
     /// Creates a node from two operands.
     /// </summary>
     /// <param name="left">Left operand.</param>
     /// <param name="right">Right operand.</param>
-    public AndNode(QueryNode left, QueryNode right)
+    public AndNode(QueryNodeBase left, QueryNodeBase right)
     {
         Left = left;
         Right = right;

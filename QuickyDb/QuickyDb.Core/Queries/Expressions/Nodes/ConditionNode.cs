@@ -6,7 +6,7 @@ namespace QuickyDb.Core.Queries.Expressions.Nodes;
 /// <summary>
 /// Comparison of a model property with a value.
 /// </summary>
-public sealed class ConditionNode : QueryNode
+public sealed class ConditionNode : QueryNodeBase
 {
     /// <summary>Property of the model that is compared.</summary>
     public PropertyInfo Property { get; }

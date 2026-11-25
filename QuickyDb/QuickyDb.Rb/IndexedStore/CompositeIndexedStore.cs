@@ -9,13 +9,13 @@ namespace QuickyDb.Rb.IndexedStore;
 /// <para>The key is the concatenation of the encoded values in the order of the properties.</para>
 /// </summary>
 /// <typeparam name="TModel">Type of the model.</typeparam>
-internal sealed class CascadeIndexedStore<TModel> : IndexedStoreBase<TModel>
+internal sealed class CompositeIndexedStore<TModel> : IndexedStoreBase<TModel>
 {
     public PropertyInfo[] Properties { get; }
 
     private readonly Func<TModel, object>[] _getValues;
 
-    public CascadeIndexedStore(PropertyInfo[] properties) : base()
+    public CompositeIndexedStore(PropertyInfo[] properties) : base()
     {
         Properties = properties;
         _getValues = new Func<TModel, object>[properties.Length];

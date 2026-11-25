@@ -13,7 +13,7 @@ namespace QuickyDb.Rb;
 /// <summary>
 /// <para>In-memory table that keeps its models in sorted indexes built on red-black trees.</para>
 /// <para>Every property marked with <see cref="IndexAttribute"/> gets its own index.</para>
-/// <para>Properties marked with <see cref="CascadeIndexAttribute"/> are grouped into composite indexes by name.</para>
+/// <para>Properties marked with <see cref="CompositeIndexAttribute"/> are grouped into composite indexes by name.</para>
 /// <para><see cref="Search"/> can filter only by properties that have an index of their own.</para>
 /// </summary>
 /// <typeparam name="TModel">Type of the model.</typeparam>
@@ -63,20 +63,20 @@ public class RbTable<TModel>
                 GetIndex(prop).AllExcept(ByteEncoder.Encode(value)),
         });
 
-        IGrouping<string, PropertyInfo>[] cascadeProperties = properties
-            .Where(p => p.GetCustomAttributes(typeof(CascadeIndexAttribute), true)?.Length > 0)
-            .Select(p => (p, p.GetCustomAttribute<CascadeIndexAttribute>()))
+        IGrouping<string, PropertyInfo>[] compositeProperties = properties
+            .Where(p => p.GetCustomAttributes(typeof(CompositeIndexAttribute), true)?.Length > 0)
+            .Select(p => (p, p.GetCustomAttribute<CompositeIndexAttribute>()))
             .OrderBy(pair => pair.Item2.Order)
             .GroupBy(p => p.Item2.Name, p => p.p)
             .ToArray();
 
-        foreach (var cascade in cascadeProperties)
+        foreach (var composite in compositeProperties)
         {
-            foreach (var prop in cascade)
+            foreach (var prop in composite)
             {
                 ValidateIndexablePropertyType(prop);
             }
-            _indexes.Add(cascade.Key, new CascadeIndexedStore<TModel>(cascade.ToArray()));
+            _indexes.Add(composite.Key, new CompositeIndexedStore<TModel>(composite.ToArray()));
         }
     }
 

@@ -31,11 +31,11 @@ internal class ByteEncoderTests
         }
     }
 
-    private static CascadeIndexedStore<TModel> CreateStore<TModel>(params string[] propertyNames)
-        => new CascadeIndexedStore<TModel>(
+    private static CompositeIndexedStore<TModel> CreateStore<TModel>(params string[] propertyNames)
+        => new CompositeIndexedStore<TModel>(
             propertyNames.Select(n => typeof(TModel).GetProperty(n)!).ToArray());
 
-    private static List<TModel> InKeyOrder<TModel>(CascadeIndexedStore<TModel> store)
+    private static List<TModel> InKeyOrder<TModel>(CompositeIndexedStore<TModel> store)
         => store.AllExcept(Array.Empty<byte>()).SelectMany(g => g).ToList();
 
     private static void AssertOrderingPreserved<T>(T[] values, Func<T, byte[]> encode)
@@ -277,7 +277,7 @@ internal class ByteEncoderTests
         });
     }
 
-    // ---------- составные ключи целиком (через CascadeIndexedStore) ----------
+    // ---------- составные ключи целиком (через CompositeIndexedStore) ----------
 
     [Test]
     public void CompositeKey_IntThenString_OrdersByFirstThenSecond()

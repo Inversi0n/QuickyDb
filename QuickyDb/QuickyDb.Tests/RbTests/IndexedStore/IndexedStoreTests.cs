@@ -15,15 +15,15 @@ internal class IndexedStoreTests
         public string B { get; set; } = "";
     }
 
-    private static CascadeIndexedStore<Person> CreatePersonStore()
-        => new CascadeIndexedStore<Person>(new[]
+    private static CompositeIndexedStore<Person> CreatePersonStore()
+        => new CompositeIndexedStore<Person>(new[]
         {
             typeof(Person).GetProperty(nameof(Person.LastName))!,
             typeof(Person).GetProperty(nameof(Person.FirstName))!
         });
 
-    private static CascadeIndexedStore<Item> CreateItemStore()
-        => new CascadeIndexedStore<Item>(new[]
+    private static CompositeIndexedStore<Item> CreateItemStore()
+        => new CompositeIndexedStore<Item>(new[]
         {
             typeof(Item).GetProperty(nameof(Item.A))!,
             typeof(Item).GetProperty(nameof(Item.B))!

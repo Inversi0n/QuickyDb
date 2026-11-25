@@ -34,13 +34,13 @@ public sealed class QueryExecutor<TModel>
     /// <exception cref="NotSupportedException">The predicate contains an unsupported expression.</exception>
     public IEnumerable<TModel> Search(Expression<Func<TModel, bool>> predicate)
     {
-        QueryNode query = ExpressionParser.Parse(predicate);
+        QueryNodeBase query = ExpressionParser.Parse(predicate);
         return Evaluate(query);
     }
 
     // Каждая ветка возвращает новый набор, а не данные индекса, поэтому IntersectWith, UnionWith и ExceptWith
     // ниже можно применять к нему на месте: индексы при этом не портятся.
-    private HashSet<TModel> Evaluate(QueryNode node)
+    private HashSet<TModel> Evaluate(QueryNodeBase node)
     {
         if (node is ConditionNode condition)
         {
