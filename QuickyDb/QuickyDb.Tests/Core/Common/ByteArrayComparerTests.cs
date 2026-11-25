@@ -85,7 +85,9 @@ public class ByteArrayComparerTests
     {
         var a = new byte[] { 1, 2, 3 };
         var b = new byte[] { 9, 8, 7 };
-        Assert.That(ByteArrayComparer.Instance.GetHashCode(a), Is.Not.EqualTo(ByteArrayComparer.Instance.GetHashCode(b)));
+        Assert.That(
+            ByteArrayComparer.Instance.GetHashCode(a),
+            Is.Not.EqualTo(ByteArrayComparer.Instance.GetHashCode(b)));
     }
 
     [Test]

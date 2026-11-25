@@ -1,6 +1,6 @@
-﻿using QuickyDb.Core.Queries.Expressions;
+﻿using System.Linq.Expressions;
+using QuickyDb.Core.Queries.Expressions;
 using QuickyDb.Core.Queries.Expressions.Nodes;
-using System.Linq.Expressions;
 
 namespace QuickyDb.Tests.Core.Queries.Expressions;
 

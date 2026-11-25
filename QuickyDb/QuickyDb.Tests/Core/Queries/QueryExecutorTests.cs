@@ -1,6 +1,6 @@
 ﻿using QuickyDb.Core.Queries;
 
-namespace QuickyDb.Tests.CoreTests;
+namespace QuickyDb.Tests.Core.Queries;
 
 // Тестируем QueryExecutor изолированно от реального IndexedStore: подсовываем
 // свой набор делегатов (Strategy) поверх обычного List<Item>. Это проверяет

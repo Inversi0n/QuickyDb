@@ -9,8 +9,8 @@ internal class ByteEncoderTests
 {
     private sealed class Item
     {
-        public int A { get; set; }
-        public string B { get; set; } = "";
+        public string A { get; set; } = "";
+        public int B { get; set; }
     }
 
     private static byte[] Bytes(params byte[] bytes) => bytes;
@@ -284,7 +284,7 @@ internal class ByteEncoderTests
     {
         var store = CreateStore<Item>(nameof(Item.A), nameof(Item.B));
 
-        foreach (var (a, b) in new[]
+        foreach (var (b, a) in new[]
         {
             (3, "b"), (-5, "b"), (int.MinValue, "x"), (3, "a"), (0, "z"), (-5, "a"), (3, "ab")
         })
@@ -292,7 +292,7 @@ internal class ByteEncoderTests
             store.Add(new Item { A = a, B = b });
         }
 
-        var actual = InKeyOrder(store).Select(i => (i.A, i.B)).ToList();
+        var actual = InKeyOrder(store).Select(i => (i.B, i.A)).ToList();
 
         Assert.That(actual, Is.EqualTo(new List<(int, string)>
         {

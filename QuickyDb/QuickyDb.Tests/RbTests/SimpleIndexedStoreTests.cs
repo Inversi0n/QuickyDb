@@ -1,7 +1,7 @@
-﻿using QuickyDb.Core.Common;
+﻿using System.Reflection;
+using QuickyDb.Core.Common;
 using QuickyDb.Rb.IndexedStore;
 using QuickyDb.Tests.RbTests.Models;
-using System.Reflection;
 
 namespace QuickyDb.Tests.RbTests;
 
@@ -52,7 +52,7 @@ internal class SimpleIndexedStoreTests
         store.Add(b);
 
         store.Remove(a);
-        Assert.That(store.TryGetEqual(ByteEncoder.Encode(1), out var afterFirstRemoval), Is.True);
+        Assert.That(store.TryGetEqual(ByteEncoder.Encode(1), out List<TestModelA> afterFirstRemoval), Is.True);
         Assert.That(afterFirstRemoval, Is.EquivalentTo(new[] { b }));
 
         store.Remove(b);
@@ -128,7 +128,9 @@ internal class SimpleIndexedStoreTests
     {
         var store = new SimpleIndexedStore<TestModelA>(V1Property);
         for (int v = fromInclusive; v <= toInclusive; v++)
+        {
             store.Add(new TestModelA { V1 = v, V2 = v.ToString() });
+        }
         return store;
     }
 }
